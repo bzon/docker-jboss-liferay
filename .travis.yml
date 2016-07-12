@@ -14,10 +14,16 @@ env:
 before_install:
  - apt-cache madison docker-engine
  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine=${DOCKER_VERSION}
+ - sudo apt-get wget
  - sudo rm /usr/local/bin/docker-compose
  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
  - chmod +x docker-compose
  - sudo mv docker-compose /usr/local/bin
+ - cd resources/installers && wget ${LIFERAY_DEPENDENCY}
+ - cd resources/installers && wget ${LIFERAY}
+ - cd resources/installers && wget ${MYSQL}
+ - cd resources/installers && wget ${TOMCAT_JULI}
+
 
 script:
  - docker build -t ${IMAGE_NAME} .
