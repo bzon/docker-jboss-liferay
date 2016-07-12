@@ -1,0 +1,19 @@
+language: bash
+
+sudo: required
+services:
+  - docker
+
+env:
+  global:
+    - DOCKER_COMPOSE_VERSION=1.7.0
+    - IMAGE_NAME=bzon/jboss-liferay:6.2-ee-sp12
+
+before_install:
+ - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+ - chmod +x docker-compose
+ - sudo mv docker-compose /usr/local/bin
+
+script:
+ - docker build -t ${IMAGE_NAME} .
+ - docker-compose up -d
