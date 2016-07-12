@@ -1,3 +1,5 @@
+![Build Status](https://travis-ci.org/bzon/docker-jboss-liferay.svg?branch=master)
+
 # Quick Start Guide
 
 ## Requirement  
