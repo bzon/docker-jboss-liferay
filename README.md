@@ -67,7 +67,7 @@ Jboss Administrator Password | *admin123!*
 
 The page should display some Licensing issue and that you'll need to enter your Order ID.
 
-![LiferayHome](https://raw.githubusercontent.com/bzon/docker-jboss/master/jboss-liferay/6.4.0-GA/img/no-license.png)
+![LiferayHome](https://raw.githubusercontent.com/bzon/docker-jboss-liferay/master/img/no-license.png)
 
 ## Enabling License
 
@@ -96,7 +96,7 @@ The page should display some Licensing issue and that you'll need to enter your 
 
 If successful, access the page again and you should now be able to proceed with the Liferay Wizard.  
 
-![LiferayHome](https://raw.githubusercontent.com/bzon/docker-jboss/master/jboss-liferay/6.4.0-GA/img/with-license.png)
+![LiferayHome](https://raw.githubusercontent.com/bzon/docker-jboss-liferay/master/img/with-license.png)
 
 # Building your own Docker Image
 
