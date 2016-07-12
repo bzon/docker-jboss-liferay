@@ -1,0 +1,4 @@
+*.war
+*.jar
+*.zip
+*.tar*

@@ -1,0 +1,40 @@
+version: '2'
+
+networks:
+  my-network:
+    driver: bridge
+
+services:
+  application:
+    image: bzon/jboss-liferay:6.2-ee-sp12
+    container_name: liferay
+    depends_on:
+      - database
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+      - "9999:9999"
+      - "8125:8125"
+      - "8443:8443"
+    environment:
+      JVM_XMX_SIZE: "4096m"
+      JVM_XMS_SIZE: "2048m"
+      PORTAL_EXT_CONTEXT_ROOT: "/liferay"
+      JBOSS_AS_MYSQL_USER: "lportal"
+      JBOSS_AS_MYSQL_PASSWORD: "lportal"
+      JBOSS_AS_MYSQL_DATABASE: "lportal_db" 
+    networks:
+      - my-network
+
+  database:
+    image: mysql:5.7
+    container_name: liferay-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lportal"
+      MYSQL_PASSWORD: "lportal"
+      MYSQL_DATABASE: "lportal_db"
+    ports:
+      - "3306:3306"
+    networks:
+      - my-network
