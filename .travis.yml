@@ -18,12 +18,11 @@ before_install:
  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
  - chmod +x docker-compose
  - sudo mv docker-compose /usr/local/bin
+
+script:
  - cd resources/installers && wget ${LIFERAY_DEPENDENCY}
  - cd resources/installers && wget ${LIFERAY}
  - cd resources/installers && wget ${MYSQL}
  - cd resources/installers && wget ${TOMCAT_JULI}
-
-
-script:
  - docker build -t ${IMAGE_NAME} .
  - docker-compose up -d
