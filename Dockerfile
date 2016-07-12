@@ -30,7 +30,7 @@ RUN yes | cp /tmp/conf/standalone.xml.template $JBOSS_HOME/standalone/configurat
 
 # Prepare liferay deployment
 RUN mkdir -p $JBOSS_HOME/standalone/deployments/ROOT.war && \
-    cd $JBOSS_HOME/standalone/deployments/ROOT.war; jar -xvf /tmp/installers/${liferay_war} && \
+    cd $JBOSS_HOME/standalone/deployments/ROOT.war; jar -xf /tmp/installers/${liferay_war} && \
     rm -fr $JBOSS_HOME/standalone/deployments/ROOT.war/WEB-INF/lib/eclipselink.jar && \
     cp /tmp/conf/portal-ext.properties.template /opt/jboss/portal-ext.properties && \
     cp /tmp/installers/tomcat-juli.jar $JBOSS_HOME/standalone/deployments/ROOT.war/WEB-INF/lib/ && \
