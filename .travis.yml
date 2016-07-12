@@ -20,9 +20,9 @@ before_install:
  - sudo mv docker-compose /usr/local/bin
 
 script:
- - cd resources/installers && wget ${LIFERAY_DEPENDENCY}
- - cd resources/installers && wget ${LIFERAY}
- - cd resources/installers && wget ${MYSQL}
- - cd resources/installers && wget ${TOMCAT_JULI}
+ - cd resources/installers && wget -q ${LIFERAY_DEPENDENCY} && cd -
+ - cd resources/installers && wget -q ${LIFERAY} && cd -
+ - cd resources/installers && wget -q ${MYSQL} && cd -
+ - cd resources/installers && wget -q ${TOMCAT_JULI} && cd -
  - docker build -t ${IMAGE_NAME} .
  - docker-compose up -d
