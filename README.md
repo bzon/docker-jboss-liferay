@@ -27,7 +27,7 @@ Your *Subscription license file* for Liferay Enterprise 6.2 e.g *your_license_fi
     
   - Deploy Liferay:
 
-    Increase the JVM_XMX_SIZE and JVM_XMS_SIZE to your preference.
+    Increase the JVM_XMX_SIZE and JVM_XMS_SIZE to your preference. JBOSS_AS_MYSQL_HOST should be the MySQL container name.
 
     ```bash
     docker run -d --net=liferay-network \
@@ -37,6 +37,7 @@ Your *Subscription license file* for Liferay Enterprise 6.2 e.g *your_license_fi
               -e JVM_XMX_SIZE="4096m" \
               -e JVM_XMS_SIZE="2048m" \
               -e PORTAL_EXT_CONTEXT_ROOT="/liferay" \
+              -e JBOSS_AS_MYSQL_HOST="liferay-mysql" \
               -e JBOSS_AS_MYSQL_USER="lportal" \
               -e JBOSS_AS_MYSQL_PASSWORD="lportal" \
               -e JBOSS_AS_MYSQL_DATABASE="lportal_db" \
