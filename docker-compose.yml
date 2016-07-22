@@ -20,6 +20,7 @@ services:
       JVM_XMX_SIZE: "4096m"
       JVM_XMS_SIZE: "2048m"
       PORTAL_EXT_CONTEXT_ROOT: "/liferay"
+      JBOSS_AS_MYSQL_HOST: "liferay-mysql"
       JBOSS_AS_MYSQL_USER: "lportal"
       JBOSS_AS_MYSQL_PASSWORD: "lportal"
       JBOSS_AS_MYSQL_DATABASE: "lportal_db" 
