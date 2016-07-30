@@ -29,7 +29,7 @@ script:
  - docker build -t ${IMAGE_NAME} .
  - cd compose-for-mysql
  - docker-compose up -d
- - count=0; until [[ $(curl -I -s localhost:8080/liferay | grep 302 | wc -l) -eq 1 ]]; do echo "sleep 5 - count $count"; sleep 1; ((count ++)); if [[ $count -eq 30 ]]; then exit 1; fi; done
+ - count=0; until [[ $(curl -I -s localhost:8080/liferay | grep 302 | wc -l) -eq 1 ]]; do echo "Waiting for liferay to be up and running.. count=$count"; sleep 30; ((count ++)); if [[ $count -eq 30 ]]; then exit 1; fi; done
 
 after_success:
  - if [ "$TRAVIS_BRANCH" == "master" ]; then
