@@ -1,3 +1,4 @@
+jdbc.default.driverClassName=###PORTAL_EXT_DEFAULT_DS_DRIVER_CLASS###
 jdbc.default.jndi.name=###PORTAL_EXT_DEFAULT_DS_JNDI###
 auto.deploy.dir=###PORTAL_EXT_AUTO_DEPLOY_DIR###
 portal.ctx=###PORTAL_EXT_CONTEXT_ROOT###

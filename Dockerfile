@@ -8,20 +8,28 @@ ARG liferay_dependencies_version=liferay-portal-dependencies-6.2-ee-sp12
 ARG liferay_war=liferay-portal-6.2-ee-sp12-20150804162203131.war
 ARG mysql_connector_jar=mysql-connector-java-5.1.39-bin.jar
 ARG liferay_module_dir=$JBOSS_HOME/modules/com/liferay/portal/main
+ARG oracle_module_home=$JBOSS_HOME/modules/com/oracle
 
 # Copy Liferay installer and dependencies
 COPY resources/installers /tmp/installers
 COPY resources/conf /tmp/conf
+COPY resources/wait-for-it.sh /wait-for-it.sh
 
 # Install ifconfig
 RUN yum -y install net-tools; yum clean all
 
-# Configure liferay module
+# Configure liferay and the jboss driver modules
 RUN mkdir -p ${liferay_module_dir} && \
+    mkdir -p ${oracle_module_home}/ojdbc6/main && \
+    mkdir -p ${oracle_module_home}/ojdbc7/main && \
     cp /tmp/conf/com.liferay.portal.module.xml ${liferay_module_dir}/module.xml && \
     unzip /tmp/installers/${liferay_dependencies_version}.zip -d /tmp/ && \
     cp /tmp/${liferay_dependencies_version}/** ${liferay_module_dir}/ && \
-    cp /tmp/installers/${mysql_connector_jar} ${liferay_module_dir}
+    cp /tmp/installers/${mysql_connector_jar} ${liferay_module_dir} && \
+    cp /tmp/conf/com.oracle.ojdbc6.module.xml ${oracle_module_home}/ojdbc6/main/module.xml && \
+    cp /tmp/conf/com.oracle.ojdbc7.module.xml ${oracle_module_home}/ojdbc7/main/module.xml && \
+    cp /tmp/installers/ojdbc6.jar ${oracle_module_home}/ojdbc6/main && \
+    cp /tmp/installers/ojdbc7.jar ${oracle_module_home}/ojdbc7/main
 
 # Configure Jboss standalone startup configuration
 RUN yes | cp /tmp/conf/standalone.xml.template $JBOSS_HOME/standalone/configuration/standalone.xml && \
@@ -46,20 +54,24 @@ VOLUME ["/opt/jboss"]
 USER jboss
 
 # Every variables starting with JBOSS_AS_ has a corresponding token in standalone.xml
-# e.g: JBOSS_AS_MYSQL_USER has a token of ###JBOSS_AS_MYSQL_USER### see resources/conf/standalone.xml for more info
-ENV JBOSS_AS_MYSQL_DS_JNDI="java:jboss/LiferayPool" \
-    JBOSS_AS_MYSQL_DS_POOL="LiferayPool" \
-    JBOSS_AS_MYSQL_HOST="liferay-mysql" \
-    JBOSS_AS_MYSQL_PORT="3306" \
-    JBOSS_AS_MYSQL_DATABASE="lportal_db" \
-    JBOSS_AS_MYSQL_USER="lportal" \
-    JBOSS_AS_MYSQL_PASSWORD="lportal" \
+# e.g: JBOSS_AS_DB_USER has a token of ###JBOSS_AS_DB_USER### see resources/conf/standalone.xml for more info
+# Setting the default with MySQL related values
+ENV JBOSS_AS_DS_JNDI="java:jboss/LiferayPool" \
+    JBOSS_AS_DS_POOL="LiferayPool" \
+    JBOSS_AS_DB_DRIVER_NAME="mysql" \
+    JBOSS_AS_DB_HOST="liferay-mysql" \
+    JBOSS_AS_DB_PORT="3306" \
+    JBOSS_AS_DB_NAME="lportal" \
+    JBOSS_AS_JDBC_URL="jdbc:mysql://mysql:3306/lportal" \
+    JBOSS_AS_DB_USER="lportal" \
+    JBOSS_AS_DB_PASSWORD="lportal" \
     JBOSS_AS_DEPLOY_TIMEOUT="300"
 
 # Every variables starting with PORTAL_EXT_ has a corresponding token in portal-ext.properties
 # e.g: PORTAL_EXT_CONTEXT_ROOT has a token of ###PORTAL_EXT_CONTEXT_ROOT### see resources/conf/portal-ext.properties for more info
 ENV PORTAL_EXT_CONTEXT_ROOT="/liferay" \
-    PORTAL_EXT_DEFAULT_DS_JNDI="java:jboss/LiferayPool" \
+    PORTAL_EXT_DEFAULT_DS_DRIVER_CLASS="com.mysql.jdbc.Driver" \
+    PORTAL_EXT_DEFAULT_DS_JNDI="" \
     PORTAL_EXT_AUTO_DEPLOY_DIR="/opt/jboss/deploy"
 
 # Set default environment variables for standalone.conf and standalone.sh
@@ -74,6 +86,5 @@ ENV STANDALONE_SCRIPT_ARGS="-c standalone.xml" \
 EXPOSE 8443 8080 9990 9999 8125
 
 COPY resources/entrypoint.sh /entrypoint.sh
-COPY resources/wait-for-it.sh /wait-for-it.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

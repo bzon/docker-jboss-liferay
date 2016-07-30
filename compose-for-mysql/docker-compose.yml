@@ -1,0 +1,30 @@
+version: '2'
+
+networks:
+ &network liferaynet:
+    driver: bridge
+
+services:
+  liferayapp:
+    image: bzon/jboss-liferay:6.2-ee-sp12
+    depends_on:
+      - liferaydb
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    env_file:
+      - mysql-sample.env
+    networks:
+      - *network
+
+  liferaydb:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "lportal"
+      MYSQL_PASSWORD: "lportal"
+      MYSQL_DATABASE: "lportal"
+    ports:
+      - "3306:3306"
+    networks:
+      - *network
