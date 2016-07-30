@@ -136,12 +136,12 @@
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:datasources:1.2">
             <datasources>
-                <datasource jta="true" jndi-name="###JBOSS_AS_MYSQL_DS_JNDI###" pool-name="###JBOSS_AS_MYSQL_DS_POOL###" enabled="true" use-java-context="true" use-ccm="true">
-                    <connection-url>jdbc:mysql://###JBOSS_AS_MYSQL_HOST###:###JBOSS_AS_MYSQL_PORT###/###JBOSS_AS_MYSQL_DATABASE###</connection-url>
-                    <driver>mysql</driver>
+                <datasource jta="true" jndi-name="###JBOSS_AS_DS_JNDI###" pool-name="###JBOSS_AS_DS_POOL###" enabled="true" use-java-context="true" use-ccm="true">
+                    <connection-url>###JBOSS_AS_JDBC_URL###</connection-url>
+                    <driver>###JBOSS_AS_DB_DRIVER_NAME###</driver>
                     <security>
-                        <user-name>###JBOSS_AS_MYSQL_USER###</user-name>
-                        <password>###JBOSS_AS_MYSQL_PASSWORD###</password>
+                        <user-name>###JBOSS_AS_DB_USER###</user-name>
+                        <password>###JBOSS_AS_DB_PASSWORD###</password>
                     </security>
                 </datasource>
                 <datasource jndi-name="java:jboss/datasources/ExampleDS" pool-name="ExampleDS" enabled="true" use-java-context="true">
@@ -153,6 +153,8 @@
                     </security>
                 </datasource>
                 <drivers>
+                    <driver name="oracle-11g" module="com.oracle.ojdbc6"/>
+                    <driver name="oracle-12c" module="com.oracle.ojdbc7"/>
                     <driver name="mysql" module="com.liferay.portal">
                         <driver-class>com.mysql.jdbc.Driver</driver-class>
                     </driver>

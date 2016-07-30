@@ -1,0 +1,16 @@
+version: '2'
+
+services:
+  liferayapp:
+    image: bzon/jboss-liferay:6.2-ee-sp12
+    container_name: liferay
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+      - "9999:9999"
+      - "8125:8125"
+      - "8443:8443"
+    env_file:
+#     - oracle12c-sample.env
+      - oracle11g-sample.env
+

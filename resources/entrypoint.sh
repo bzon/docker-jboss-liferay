@@ -17,7 +17,7 @@ if [[ ! -f "/opt/vars.lock" ]]; then
 
     # Apply configuration for standalone.xml
     FILE=${JBOSS_HOME}/standalone/configuration/standalone.xml
-    declare -a JBOSS_AS_ENVS=$(env | grep JBOSS_AS_ | awk -F= '{print $1}')
+    declare -a JBOSS_AS_ENVS=$(env | grep ^"JBOSS_AS_" | awk -F= '{print $1}')
     for token in ${JBOSS_AS_ENVS[@]}
     do
       replacer
@@ -25,7 +25,7 @@ if [[ ! -f "/opt/vars.lock" ]]; then
 
     # Apply configuration for portal-ext.properties
     FILE=/opt/jboss/portal-ext.properties
-    declare -a PORTAL_EXT_ENVS=$(env | grep PORTAL_EXT_ | awk -F= '{print $1}')
+    declare -a PORTAL_EXT_ENVS=$(env | grep ^"PORTAL_EXT_" | awk -F= '{print $1}')
     for token in ${PORTAL_EXT_ENVS[@]}
     do
       replacer
@@ -44,7 +44,17 @@ fi
 
 # If `docker run` received no additional arguments, then run jboss startup script.
 if [[ $# -lt 1 ]]; then
-  /wait-for-it.sh ${JBOSS_AS_MYSQL_HOST}:${JBOSS_AS_MYSQL_PORT} --timeout=60 --strict  -- echo "MySQL Database is ready for use!"
+  # If default Liferay JNDI is set,
+  if [[ ! -z ${PORTAL_EXT_DEFAULT_DS_JNDI} ]]; then
+    # Wait for database to be healthy
+    /wait-for-it.sh ${JBOSS_AS_DB_HOST}:${JBOSS_AS_DB_PORT} --timeout=2000 --strict  -- echo "Database is ready for use!"
+  else
+    echo "[WARNING] You did not define a value for PORTAL_EXT_DEFAULT_DS_JNDI variable. Set it to 'java:jboss/LiferayPool' if you want to use an external database. Jboss will use the default built H2 for now.."
+    # Remove default jndi settings as it can cause errors if empty.
+    sed -i "s+jdbc.default.driverClassName=.*++" /opt/jboss/portal-ext.properties
+    sed -i "s+jdbc.default.jndi.name=.*++" /opt/jboss/portal-ext.properties
+  fi
+  # Start Jboss
   /opt/jboss/startup.sh
 fi
 
